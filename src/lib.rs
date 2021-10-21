@@ -80,10 +80,7 @@
 #![deny(warnings, missing_docs, unused)]
 
 #[doc(hidden)]
-pub use {
-  None as __None,
-  Some as __Some,
-};
+pub use {None as __None, Some as __Some};
 
 #[doc(hidden)]
 pub mod __tuple {
@@ -161,7 +158,7 @@ pub mod __tuple {
 ///
 /// This macro consumes a pattern and tries its hardest to expand into a tuple
 /// of identifiers, representing every variable bound by the pattern.
-/// 
+///
 /// The heuristic it uses to do so is described below. This is the best
 /// possible declarative implementation; we can do better, but it would
 /// a proc macro.
@@ -266,8 +263,8 @@ macro_rules! extrude {
   }
 }
 
-#[cfg(test)]
-mod test {
+#[test]
+fn test() {
   #[derive(Copy, Clone)]
   #[allow(unused)]
   enum Foo {
@@ -276,26 +273,26 @@ mod test {
     C { a: &'static str, b: &'static Foo },
   }
 
-  #[test]
-  fn test() {
-    let mut f: Foo = Foo::A;
-    let _: Option<()> = extrude!(&mut f, Foo::A);
-    let _: Option<()> = extrude!(&f, Foo::B(..));
-    let _: Option<()> = extrude!(&f, Foo::B(_, _));
-    let _: Option<&i32> = extrude!(&f, Foo::B(a, ..));
-    let _: Option<&mut u32> = extrude!(&mut f, Foo::B(_, b));
-    let _: Option<(&mut i32, &mut u32)> = extrude!(&mut f, Foo::B(a, b));
-    let _: Option<&str> = extrude!(f, Foo::C { a, .. });
-    let _: Option<(&mut &str, &mut &Foo)> = extrude!(&mut f, Foo::C { a, b });
-    let _: Option<&i32> = extrude!(f, Foo::C {
-        a: "foo",
-        b: Foo::B(x, _),
-    });
+  let mut f: Foo = Foo::A;
+  let _: Option<()> = extrude!(&mut f, Foo::A);
+  let _: Option<()> = extrude!(&f, Foo::B(..));
+  let _: Option<()> = extrude!(&f, Foo::B(_, _));
+  let _: Option<&i32> = extrude!(&f, Foo::B(a, ..));
+  let _: Option<&mut u32> = extrude!(&mut f, Foo::B(_, b));
+  let _: Option<(&mut i32, &mut u32)> = extrude!(&mut f, Foo::B(a, b));
+  let _: Option<&str> = extrude!(f, Foo::C { a, .. });
+  let _: Option<(&mut &str, &mut &Foo)> = extrude!(&mut f, Foo::C { a, b });
+  let _: Option<&i32> = extrude!(
+    f,
+    Foo::C {
+      a: "foo",
+      b: Foo::B(x, _),
+    }
+  );
 
-    let g: Option<Foo> = None;
-    let _: Option<i32> = extrude!(g, Some(Foo::B(a, _)));
+  let g: Option<Foo> = None;
+  let _: Option<i32> = extrude!(g, Some(Foo::B(a, _)));
 
-    let h: [Option<Foo>; 10] = [None; 10];
-    let _: Option<u32> = extrude!(h, [_, Some(Foo::B(_, a)), ..]);
-  }
+  let h: [Option<Foo>; 10] = [None; 10];
+  let _: Option<u32> = extrude!(h, [_, Some(Foo::B(_, a)), ..]);
 }
