@@ -19,5 +19,7 @@ authors = ["Miguel Young de la Sota <mcyoung@google.com>"]
 edition = "2018"
 repository = "https://github.com/google/extrude"
 
+keywords = ["macro", "match", "enums"]
 license = "Apache-2.0"
+readme = "README.crates.io.md"
 description = "A macro for unwrapping an enum value into an Option."
